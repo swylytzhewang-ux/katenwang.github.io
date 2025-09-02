@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>秋招面试AI助手</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- 顶部导航栏 -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-calendar-alt"></i>
+                <span>秋招面试AI助手</span>
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="calendar">
+                    <i class="fas fa-calendar"></i>
+                    日历
+                </button>
+                <button class="nav-tab" data-tab="interview">
+                    <i class="fas fa-briefcase"></i>
+                    面试
+                </button>
+                <button class="nav-tab" data-tab="ai-assistant">
+                    <i class="fas fa-robot"></i>
+                    AI助手
+                </button>
+            </div>
+            <div class="nav-actions">
+                <div class="nav-search">
+                    <i class="fas fa-magnifying-glass"></i>
+                    <input id="global-search" class="search-input" type="search" placeholder="搜索公司/职位/备注 (按 Enter 搜索)">
+                </div>
+                <button class="theme-toggle" id="theme-toggle" title="切换主题">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 主要内容区域 -->
+        <main class="main-content">
+            <!-- 日历功能页面 -->
+            <div class="tab-content active" id="calendar-tab">
+                <div class="calendar-container">
+                    <!-- 日历头部 -->
+                    <div class="calendar-header">
+                        <div class="calendar-nav">
+                            <button class="nav-btn" id="prev-month">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h2 class="current-month" id="current-month">2025年6月</h2>
+                            <button class="nav-btn" id="next-month">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="calendar-actions">
+                            <button class="btn btn-today" id="today-btn">今日</button>
+                            <button class="btn btn-next" id="next-interview-btn" title="跳转到下一场面试">
+                                <i class="fas fa-forward"></i>
+                                下一场
+                            </button>
+                            <button class="btn btn-add-interview" id="add-interview-btn">
+                                <i class="fas fa-plus"></i>
+                                添加面试
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 日历网格 -->
+                    <div class="calendar-grid">
+                        <div class="weekdays">
+                            <div class="weekday">周一</div>
+                            <div class="weekday">周二</div>
+                            <div class="weekday">周三</div>
+                            <div class="weekday">周四</div>
+                            <div class="weekday">周五</div>
+                            <div class="weekday">周六</div>
+                            <div class="weekday">周日</div>
+                        </div>
+                        <div class="days-grid" id="days-grid">
+                            <!-- 日期单元格将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 选中日期的面试列表 -->
+                    <div class="selected-date-info" id="selected-date-info" style="display: none;">
+                        <h3 class="selected-date-title">面试安排</h3>
+                        <div class="interview-list" id="interview-list">
+                            <!-- 面试列表项将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 面试功能页面 -->
+            <div class="tab-content" id="interview-tab">
+                <div class="interview-container">
+                    <div class="interview-header">
+                        <h2>面试详情</h2>
+                        <div class="interview-actions">
+                            <button class="btn btn-save" id="save-interview">保存</button>
+                            <button class="btn btn-cancel" id="cancel-interview">返回</button>
+                        </div>
+                    </div>
+
+                    <form class="interview-form" id="interview-form">
+                        <!-- 基础信息区 -->
+                        <div class="form-section">
+                            <h3>基础信息</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="company-name">
+                                        <i class="fas fa-building"></i>
+                                        公司名称
+                                    </label>
+                                    <input type="text" id="company-name" placeholder="请输入公司名称" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="interview-datetime">
+                                        <i class="fas fa-clock"></i>
+                                        面试时间
+                                    </label>
+                                    <input type="datetime-local" id="interview-datetime" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="job-description">
+                                    <i class="fas fa-file-alt"></i>
+                                    岗位JD
+                                </label>
+                                <textarea id="job-description" placeholder="请粘贴岗位描述..." rows="6"></textarea>
+                                <div class="char-count">字数：<span id="jd-char-count">0</span></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="notes">
+                                    <i class="fas fa-sticky-note"></i>
+                                    备注
+                                </label>
+                                <input type="text" id="notes" placeholder="其他需要注意的信息">
+                            </div>
+                        </div>
+
+                        <!-- 面试题区 -->
+                        <div class="form-section">
+                            <h3>面试题准备</h3>
+
+                            <!-- 模拟面试题 -->
+                            <div class="interview-questions-section">
+                                <div class="section-header">
+                                    <h4>模拟面经</h4>
+                                    <button type="button" class="btn btn-add-question" id="add-mock-question">
+                                        <i class="fas fa-plus"></i>
+                                        添加模拟题
+                                    </button>
+                                </div>
+                                <div class="questions-container" id="mock-questions-container">
+                                    <!-- 模拟面试题将通过JavaScript动态生成 -->
+                                </div>
+                            </div>
+
+                            <!-- 真实面经 -->
+                            <div class="interview-questions-section">
+                                <div class="section-header">
+                                    <h4 class="real-interview">真实面经</h4>
+                                    <button type="button" class="btn btn-add-question" id="add-real-question">
+                                        <i class="fas fa-plus"></i>
+                                        添加真实面经
+                                    </button>
+                                </div>
+                                <div class="questions-container" id="real-questions-container">
+                                    <!-- 真实面试题将通过JavaScript动态生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- AI助手功能页面 -->
+            <div class="tab-content" id="ai-assistant-tab">
+                <div class="ai-assistant-container">
+                    <div class="chat-header">
+                        <h2>
+                            <i class="fas fa-robot"></i>
+                            AI 面试助手
+                        </h2>
+                    </div>
+
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message ai-message">
+                            <div class="message-content">
+                                <p>您好！我是您的秋招面试助手。我可以帮您：</p>
+                                <ul>
+                                    <li>添加和管理面试安排</li>
+                                    <li>生成模拟面试题和答案</li>
+                                    <li>总结真实面经和复盘分析</li>
+                                    <li>回答秋招相关问题</li>
+                                </ul>
+                                <p>请告诉我您需要什么帮助？</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-area">
+                        <div class="input-container">
+                            <button class="voice-btn" id="voice-btn" title="语音输入">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <input type="text" class="chat-input" id="chat-input"
+                                placeholder="请输入你的问题或需求（如：添加明天10点XX公司的产品岗面试）">
+                            <button class="send-btn" id="send-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                发送
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 模态框 -->
+    <div class="modal" id="interview-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加面试</h3>
+                <button class="close-btn" id="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="quick-interview-form">
+                    <div class="form-group">
+                        <label for="modal-company">公司名称</label>
+                        <input type="text" id="modal-company" placeholder="请输入公司名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-datetime">面试时间</label>
+                        <input type="datetime-local" id="modal-datetime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-position">职位</label>
+                        <input type="text" id="modal-position" placeholder="请输入职位名称">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" id="modal-cancel">取消</button>
+                <button class="btn btn-save" id="modal-save">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 确认删除模态框 -->
+    <div class="modal" id="confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>确认删除</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">确定要删除这条面试记录吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" id="confirm-cancel">取消</button>
+                <button class="btn btn-delete" id="confirm-delete">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 列表模态框（用于搜索和查看当天全部面试） -->
+    <div class="modal" id="list-modal">
+        <div class="modal-content list-modal-content">
+            <div class="modal-header">
+                <h3 id="list-modal-title">面试列表</h3>
+                <button class="close-btn" id="list-modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="list-modal-container" class="list-container">
+                    <!-- 动态列表填充 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-cancel" id="list-modal-cancel">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data-manager.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/interview.js"></script>
+    <script src="js/ai-assistant.js"></script>
+    <script src="js/mock-interview.js"></script>
+</body>
+
+</html>
